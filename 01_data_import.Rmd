@@ -8,6 +8,7 @@ This file is for doing data import
 ```{r}
 library(tidyverse)
 library(readxl)
+library(haven)
 ```
 
 ## Importing two datasets
@@ -67,7 +68,7 @@ tells you what you can do when reading a csv
 #?read_csv
 ```
 
-# oh excel .....
+## oh excel .....
 Importing new dataset from excel 
 ```{r}
 mlb_df =
@@ -104,4 +105,25 @@ FOTR2_df=
              )
 FOTR2_df
 ```
+
+## Import SAS 
+Read in the pulse dataset
+```{r}
+Pulse_df=
+  read_sas("data_file/public_pulse_data.sas7bdat")
+
+Pulse_df = janitor::clean_names(Pulse_df)
+
+```
+
+## What's so bad about 'read.csv()'
+Import pups with 'read.csv()
+```{r}
+pups_df_base =
+  read.csv("data_file/FAS_pups.csv")
+
+pups_df_base
+```
+
+Won't show: lazy about variable names; super slow for big datasets 
 
