@@ -3,19 +3,49 @@ title: "Data Import"
 output: github_document
 ---
 
-I'm an R Markdown document! 
-
-# Section 1
-
-Here's a **code chunk** that samples from 
-a _normal distribution_:
+This file is for doing data import
 
 ```{r}
-samp = rnorm(100)
-length(samp)
+library(tidyverse)
+```
+Import out first dataset
+```{r}
+litters_df =
+  read_csv(file = "data_file/FAS_litters.csv")
+
+# makes it into snake case 
+litters_df =janitor:: clean_names(litters_df)
+```
+Import the pups dataset
+```{r}
+pups_df = 
+  read_csv(file = "data_file/FAS_pups.csv", skip = 3)
+  
+pups_df = janitor::clean_names(pups_df) 
+  
 ```
 
-# Section 2
+## Look at the data 
+```{r}
+litters_df
+pups_df
+```
 
-I can take the mean of the sample, too!
-The mean is `r mean(samp)`.
+Head or tail of the dataset 
+```{r}
+head(litters_df, 20)
+
+tail(pups_df, 5)
+```
+
+skimming? 
+using :: is for when you want to use one feature of a package without loading the whole package. 
+```{r}
+skimr::skim(pups_df)
+```
+
+viewing- don't do this in R markdown just in the command 
+```{r}
+# view(pups_df) 
+```
+
