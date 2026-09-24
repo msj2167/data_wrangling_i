@@ -74,95 +74,100 @@ In the pups data, select litter number, sex, and PD ears
 select(pups_df, litter_number, sex, pd_ears)
 ```
 
-
-
-
-
-## Look at the data 
+## 'filter' some rows 
 ```{r}
-litters_df
-pups_df
+filter(litters_df, gd_of_birth == 20) 
+
+filter(litters_df, pups_born_alive <= 5)
+
+filter(litters_df, pups_born_alive != 6)
+
+filter(litters_df, group %in% c("Con7", "Con8"), pups_born_alive < 7) 
+
+# removes the rows with the missing values for those variables 
+drop_na(litters_df, gd0_weight) 
 ```
 
-Head or tail of the dataset 
+In the pups dataset, keep only rows where PD walk is less than 11 and sex is 2
 ```{r}
-head(litters_df, 20)
-
-tail(pups_df, 5)
+filter(pups_df, pd_walk < 11, sex == 2)
 ```
 
-skimming? 
-using :: is for when you want to use one feature of a package without loading the whole package. 
+## 'mutate' to change some columns 
+
+lets add and change some columns 
+str_to_lower = makes everything lower case 
 ```{r}
-skimr::skim(pups_df)
+mutate(litters_df, 
+       wt_gain= gd18_weight - gd0_weight,
+       wt_gain_squared = wt_gain ^ 2, 
+       group = str_to_lower(group))
 ```
 
-viewing- don't do this in R markdown just in the command 
+In the pups dataset, create a variable that subtracts 7 from PD walk
+
 ```{r}
-# view(pups_df) 
+mutate(pups_df, pd_walk_minus_7 = pd_walk - 7)
 ```
 
-tells you what you can do when reading a csv
+## 'arange' the data 
 ```{r}
-#?read_csv
-```
-
-## oh excel .....
-Importing new dataset from excel 
-```{r}
-mlb_df =
-  read_excel("data_file/mlb11.xlsx")
-```
-
-Look at the data 
-```{r}
-mlb_df
+arrange(litters_df, pups_born_alive)
+arrange(litters_df, desc(pups_born_alive))
 
 ```
 
-tells you what you can do when reading an excel file
+Good example
+pipe is shift command m 
 ```{r}
-# ?read_excel 
+litters_df =
+  read_csv(file = "data_file/FAS_litters.csv",na = c("", "NA",".")) |> 
+  janitor:: clean_names() |> 
+  select(group, starts_with("gd")) |> 
+    drop_na() |> 
+    mutate(
+      wt_gain = gd18_weight - gd0_weight,
+      group = str_to_lower(group)
+    )
 ```
 
-Import FOTR words
+load pups, clean names, drop missing, keep litter number and pd variables, add pd walk -7
 ```{r}
-FOTR_df= 
-  read_excel("data_file/LotR_Words.xlsx",
-              range = "B3:D6"
-             )
-
-FOTR_df
-
+pups_df =
+  read_csv(file = "data_file/FAS_pups.csv", skip = 3, na = c("", "NA",".")) |> 
+  janitor:: clean_names() |> 
+  drop_na() |> 
+  select(litter_number, starts_with("pd")) |> 
+    mutate(
+      pd_walk_minus_7 = pd_walk - 7
+    )
 ```
 
-Importing the Two Towers Table 
+sometimes the first thing isn't a dataframe 
+
 ```{r}
-FOTR2_df= 
-  read_excel("data_file/LotR_Words.xlsx",
-              range = "F3:H6"
-             )
-FOTR2_df
+litters_df |> 
+  filter(group %in% c("con7", "con8" )) |> 
+  lm(gd18_weight ~ gd0_weight, data = _)
 ```
 
-## Import SAS 
-Read in the pulse dataset
+select vs pull 
 ```{r}
-Pulse_df=
-  read_sas("data_file/public_pulse_data.sas7bdat")
+litters_df |> 
+  select(group)
 
-Pulse_df = janitor::clean_names(Pulse_df)
-
+litters_df |> 
+  pull(group) 
 ```
 
-## What's so bad about 'read.csv()'
-Import pups with 'read.csv()
+never do '$'
 ```{r}
-pups_df_base =
-  read.csv("data_file/FAS_pups.csv")
-
-pups_df_base
+litters_df$group
 ```
 
-Won't show: lazy about variable names; super slow for big datasets 
+pipes and viewing (do not usually have this in an R markdown)
+```{r}
+litters_df |> 
+  filter(group %in% c("con7", "con8"))
+```
 
