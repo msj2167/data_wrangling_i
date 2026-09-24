@@ -1,0 +1,129 @@
+---
+title: "Data Import"
+output: github_document
+---
+
+This file is for doing data import
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(haven)
+```
+
+## Importing two datasets
+
+Import out first dataset
+```{r}
+litters_df =
+  read_csv(
+    file = "data_file/FAS_litters.csv",
+   na = c("", "NA",".")
+  )
+litters_df
+
+# makes it into snake case 
+litters_df =janitor:: clean_names(litters_df)
+```
+Import the pups dataset
+using na formats all the missing values (.) and the NAs to read as missing 
+```{r}
+pups_df = 
+  read_csv(
+    file = "data_file/FAS_pups.csv", 
+    skip = 3,
+    na = c("","NA",".")
+  )
+  
+pups_df = janitor::clean_names(pups_df) 
+  
+```
+
+## Look at the data 
+```{r}
+litters_df
+pups_df
+```
+
+Head or tail of the dataset 
+```{r}
+head(litters_df, 20)
+
+tail(pups_df, 5)
+```
+
+skimming? 
+using :: is for when you want to use one feature of a package without loading the whole package. 
+```{r}
+skimr::skim(pups_df)
+```
+
+viewing- don't do this in R markdown just in the command 
+```{r}
+# view(pups_df) 
+```
+
+tells you what you can do when reading a csv
+```{r}
+#?read_csv
+```
+
+## oh excel .....
+Importing new dataset from excel 
+```{r}
+mlb_df =
+  read_excel("data_file/mlb11.xlsx")
+```
+
+Look at the data 
+```{r}
+mlb_df
+
+```
+
+tells you what you can do when reading an excel file
+```{r}
+# ?read_excel 
+```
+
+Import FOTR words
+```{r}
+FOTR_df= 
+  read_excel("data_file/LotR_Words.xlsx",
+              range = "B3:D6"
+             )
+
+FOTR_df
+
+```
+
+Importing the Two Towers Table 
+```{r}
+FOTR2_df= 
+  read_excel("data_file/LotR_Words.xlsx",
+              range = "F3:H6"
+             )
+FOTR2_df
+```
+
+## Import SAS 
+Read in the pulse dataset
+```{r}
+Pulse_df=
+  read_sas("data_file/public_pulse_data.sas7bdat")
+
+Pulse_df = janitor::clean_names(Pulse_df)
+
+```
+
+## What's so bad about 'read.csv()'
+Import pups with 'read.csv()
+```{r}
+pups_df_base =
+  read.csv("data_file/FAS_pups.csv")
+
+pups_df_base
+```
+
+Won't show: lazy about variable names; super slow for big datasets 
+
