@@ -25,6 +25,7 @@ litters_df
 # makes it into snake case 
 litters_df =janitor:: clean_names(litters_df)
 ```
+
 Import the pups dataset
 using na formats all the missing values (.) and the NAs to read as missing 
 ```{r}
@@ -38,6 +39,44 @@ pups_df =
 pups_df = janitor::clean_names(pups_df) 
   
 ```
+
+### 'select' some variables
+```{r}
+# shows only the variable you name 
+select(litters_df, group, litter_number)
+
+select(litters_df, group:gd_of_birth)
+
+select(litters_df, -group)
+
+select(litters_df, starts_with("gd"), group)
+
+# this renames the variable to GROUP and then keeps everything else
+select(litters_df, GROUP = group, everything())
+
+select(litters_df, -starts_with("gd"))
+
+```
+
+a couple of alternatives 
+
+```{r}
+# another way to rename variables 
+rename(litters_df, GROUP = group)
+
+# moves these variables to the front
+relocate(litters_df, litter_number, gd0_weight)
+```
+
+In the pups data, select litter number, sex, and PD ears
+```{r}
+# shows only the variable you name 
+select(pups_df, litter_number, sex, pd_ears)
+```
+
+
+
+
 
 ## Look at the data 
 ```{r}
